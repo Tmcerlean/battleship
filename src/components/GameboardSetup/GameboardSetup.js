@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useRef, useState, useLayoutEffect } from 'react';
 import gameboardFactory from '../../factories/gameboardFactory';
 import Table from '../Reusable/Table';
 import './GameboardSetup.css';
@@ -51,12 +51,12 @@ const GameboardSetup = () => {
 	const createUiGrid = () => {
         const cells = [];
 		for (let i = 0; i < 100; i++) {
-				cells.push(i);
+			cells.push(i);
         }
         let counter = -1;
         const result = cells.map((cell) => {
             counter++;
-            return <div className='cell' id={counter} />;
+            return <div className='cell' id={counter} onClick={onClickHandler} onMouseOut={onMouseOutHandler} onMouseOver={onMouseOverHandler} />;
 		});
 		setHumanSetupGrid(result);
 	};
@@ -66,93 +66,73 @@ const GameboardSetup = () => {
 		createUiGrid();
 	}
 
-	const currentShip = () => {
-		return ships[placedShips];
-	};
-
-	const clickListener = (e) => {
-		e.stopImmediatePropagation();
-		let direction = currentShip().direction;
+	const onClickHandler = (e) => {
+		console.log(placedShips)
+		let direction = ships[placedShips].direction;
 		let start = parseInt(e.target.id);
-		let end = start + currentShip().length - 1;
-		if (playerGameboard.checkValidCoordinates(direction, start, end)) {
+		let end = start + ships[placedShips].length - 1;
+		console.log(playerGameboard.checkIfShipPresent());
+		if ((playerGameboard.checkValidCoordinates(direction, start, end)) && (!playerGameboard.checkIfShipPresent(direction, start, end))) {
 			playerGameboard.placeShip(placedShips, direction, start, end);
 			setPlacedShips(oldValue => oldValue + 1);
-			console.log(placedShips);
 		}
-	};
+	}
 
-	const setEventListeners = () => {
+	const onMouseOverHandler = (e) => {
+		let direction = ships[placedShips].direction;
+		let start = parseInt(e.target.id);
+		let end = start + ships[placedShips].length - 1;
 		const gameboardArray = Array.from(document.querySelectorAll(".cell"));
-		gameboardArray.forEach((cell) => {
-			cell.addEventListener("click", (e) => {
-				clickListener(e);
-			});
-			cell.addEventListener("mouseover", (e) => {
-				e.stopImmediatePropagation();
-				let direction = currentShip().direction;
-				let start = parseInt(cell.id);
-				let end = start + currentShip().length - 1;
-				if (currentShip().direction === 'horizontal') {
-					const newShip = [];
-					if (playerGameboard.checkValidCoordinates(direction, start, end)) {
-						for (let i = start; i <= end; i++) {
-							newShip.push(i);
-						};
-						newShip.forEach((cell) => {
-							gameboardArray[cell].classList.add('test');
-						})
-					}
-				} else {
-					const newShip = [];
-					if (playerGameboard.checkValidCoordinates(direction, start, end)) {
-						for (let i = start; i <= end; i += 10) {
-							newShip.push(i);  
-						};
-						newShip.forEach((cell) => {
-							gameboardArray[cell].classList.add('test');
-						})
-					}
-				}
-			})
-			cell.addEventListener("mouseleave", (e) => {
-				e.stopImmediatePropagation();
-				let direction = currentShip().direction;
-				let start = parseInt(cell.id);
-				let end = start + currentShip().length - 1;
-				if (currentShip().direction === 'horizontal') {
-					const newShip = [];
-					if (playerGameboard.checkValidCoordinates(direction, start, end)) {
-						for (let i = start; i <= end; i++) {
-							newShip.push(i);
-						};
-						newShip.forEach((cell) => {
-							gameboardArray[cell].classList.remove('test');
-						})
-					}
-				} else {
-					const newShip = [];
-					if (playerGameboard.checkValidCoordinates(direction, start, end)) {
-						for (let i = start; i <= end; i += 10) {
-							newShip.push(i);  
-						};
-						newShip.forEach((cell) => {
-							gameboardArray[cell].classList.remove('test');
-						})
-					}
-				}
-			})
-		});
-	};
+		if (ships[placedShips].direction === 'horizontal') {
+			const newShip = [];
+			if (playerGameboard.checkValidCoordinates(direction, start, end)) {
+				for (let i = start; i <= end; i++) {
+					newShip.push(i);
+				};
+				newShip.forEach((cell) => {
+					gameboardArray[cell].classList.add('test');
+				})
+			}
+		} else {
+			const newShip = [];
+			if (playerGameboard.checkValidCoordinates(direction, start, end)) {
+				for (let i = start; i <= end; i += 10) {
+					newShip.push(i);  
+				};
+				newShip.forEach((cell) => {
+					gameboardArray[cell].classList.add('test');
+				})
+			}
+		}
+	}
 
-	const removeEventListeners = () => {
+	const onMouseOutHandler = (e) => {
+		let direction = ships[placedShips].direction;
+		let start = parseInt(e.target.id);
+		let end = start + ships[placedShips].length - 1;
 		const gameboardArray = Array.from(document.querySelectorAll(".cell"));
-		gameboardArray.forEach((cell) => {
-			cell.removeEventListener("click", (e) => {
-				clickListener(e);
-			});
-		});
-	};
+		if (ships[placedShips].direction === 'horizontal') {
+			const newShip = [];
+			if (playerGameboard.checkValidCoordinates(direction, start, end)) {
+				for (let i = start; i <= end; i++) {
+					newShip.push(i);
+				};
+				newShip.forEach((cell) => {
+					gameboardArray[cell].classList.remove('test');
+				})
+			}
+		} else {
+			const newShip = [];
+			if (playerGameboard.checkValidCoordinates(direction, start, end)) {
+				for (let i = start; i <= end; i += 10) {
+					newShip.push(i);  
+				};
+				newShip.forEach((cell) => {
+					gameboardArray[cell].classList.remove('test');
+				})
+			}
+		}
+	}
 
 	useEffect(() => {
 		setUpPlayerGrid();
@@ -160,18 +140,8 @@ const GameboardSetup = () => {
 	}, []);
 
 	useEffect(() => {
-		console.log(humanSetupGrid)
-	}, [humanSetupGrid]);
-
-	// Re-render the component to enable event listeners to be added to generated grid
-	useLayoutEffect(() => {
-		setEventListeners();
-	});
-
-	useEffect(() => {
-		removeEventListeners();
-		setEventListeners();
 		console.log(placedShips)
+		console.log(playerGameboard);
 	}, [placedShips])
 
     return (

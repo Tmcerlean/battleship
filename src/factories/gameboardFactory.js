@@ -67,20 +67,20 @@ const gameboardFactory = () => {
     const checkIfShipPresent = (direction, start, end) => {
         if (direction === 'horizontal') {
             for (let i = start; i <= end; i++) {
-                shipYard.forEach((ship => {
+                for (const ship of shipYard) {
                     if (ship.position.includes(i)) {
                         return true;
                     }
-                }))
+                }
             };
             return false;
         } else {
             for (let i = start; i <= end; i += 10) {
-                shipYard.forEach((ship => {
+                for (const ship of shipYard) {
                     if (ship.position.includes(i)) {
                         return true;
                     }
-                }))
+                }
             };
             return false;
         };
@@ -118,6 +118,7 @@ const gameboardFactory = () => {
 
     return { 
         checkValidCoordinates,
+        checkIfShipPresent,
         placeShip,
         receiveAttack,
         shipYard,
