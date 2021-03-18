@@ -7,7 +7,9 @@ import './Game.css';
 //
 // -----------------------------------------------
 
-const Game = () => {
+const Game = (props) => {
+
+    console.log(props.playerSetupGameboard.shipYard[0])
 
     return (
         <div className="">

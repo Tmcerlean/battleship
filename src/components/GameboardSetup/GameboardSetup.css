@@ -43,3 +43,7 @@
 .cell.test {
     background-color: blue;
 }
+
+.cell.added-ship {
+    background-color: green;
+}

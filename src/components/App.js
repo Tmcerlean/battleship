@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import Layout from './Reusable/Layout';
 import Intro from './Intro/Intro';
@@ -9,6 +9,11 @@ const App = () => {
 
     const [name, setName] = useState('');
     const [phase, setPhase] = useState(0);
+    const [playerSetupGameboard, setPlayerSetupGameboard] = useState({});
+
+    useEffect(() => {
+        console.log(playerSetupGameboard)
+    }, [playerSetupGameboard]);
 
     const setPlayerName = (name) => {
         setName(name);
@@ -25,11 +30,16 @@ const App = () => {
     const showNextComponent = () => {
 		if (phase === 1) {
             return (
-                <GameboardSetup />
+                <GameboardSetup 
+                    setPlayerSetupGameboard={setPlayerSetupGameboard}
+                    handleNextStepChange={handleNextStepChange}
+                />
             );
         } else if (phase === 2) {
             return (
-                <Game />
+                <Game 
+                    playerSetupGameboard={playerSetupGameboard}
+                />
             );
         } else {
             return (
@@ -39,8 +49,8 @@ const App = () => {
                 />
             );
         };
-	};
-
+    };
+    
     return (
         <Layout>
             {showNextComponent()}

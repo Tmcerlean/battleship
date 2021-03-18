@@ -10,9 +10,10 @@ import './GameboardSetup.css';
 // -----------------------------------------------
 
 let playerGameboard = gameboardFactory();
+let aiGameboard = gameboardFactory();
 
-const GameboardSetup = () => {
-	const [humanSetupGrid, setHumanSetupGrid] = useState([]);
+const GameboardSetup = (props) => {
+
 	const [ships,_setShips] = useState([
 		{
 			name: 'carrier',
@@ -39,49 +40,71 @@ const GameboardSetup = () => {
 			length: 2,
 			direction: 'horizontal'
 		}]);
+		
 	const [placedShips, setPlacedShips] = useState(0);
-
-	const createGrid = () => {
+   
+	const createUiGrid = () => {
 		const cells = [];
 		for (let i = 0; i < 100; i++) {
-			cells.push(0);
-		};
-    };
-    
-	const createUiGrid = () => {
-        const cells = [];
-		for (let i = 0; i < 100; i++) {
-			cells.push(i);
-        }
-        let counter = -1;
-        const result = cells.map((cell) => {
-            counter++;
-            return <div className='cell' id={counter} onClick={onClickHandler} onMouseOut={onMouseOutHandler} onMouseOver={onMouseOverHandler} />;
+		  cells.push(i);
+		}
+		let counter = -1;
+		const result = cells.map((cell) => {
+		  counter++;
+		  return (
+			<div
+			  className="cell"
+			  id={counter}
+			  onClick={onClickHandler}
+			  onMouseOut={onMouseOutHandler}
+			  onMouseOver={onMouseOverHandler}
+			/>
+		  );
 		});
-		setHumanSetupGrid(result);
-	};
+		return result;
+	  };
 
 	const setUpPlayerGrid = () => {
-		// createGrid('grid');
 		createUiGrid();
-	}
+	};
 
 	const onClickHandler = (e) => {
-		console.log(placedShips)
-		let direction = ships[placedShips].direction;
-		let start = parseInt(e.target.id);
-		let end = start + ships[placedShips].length - 1;
-		console.log(playerGameboard.checkIfShipPresent());
+		const direction = ships[placedShips].direction;
+		const start = parseInt(e.target.id);
+		const end = start + ships[placedShips].length - 1;
+		const gameboardArray = Array.from(document.querySelectorAll(".cell"));
 		if ((playerGameboard.checkValidCoordinates(direction, start, end)) && (!playerGameboard.checkIfShipPresent(direction, start, end))) {
 			playerGameboard.placeShip(placedShips, direction, start, end);
 			setPlacedShips(oldValue => oldValue + 1);
-		}
-	}
+			if (ships[placedShips].direction === 'horizontal') {
+				const newShip = [];
+				for (let i = start; i <= end; i++) {
+					newShip.push(i);
+				};
+				newShip.forEach((cell) => {
+					gameboardArray[cell].classList.add('added-ship');
+				});
+			};
+			} else {
+				const newShip = [];
+				if (playerGameboard.checkValidCoordinates(direction, start, end)) {
+					for (let i = start; i <= end; i += 10) {
+						newShip.push(i);  
+					};
+					newShip.forEach((cell) => {
+						gameboardArray[cell].classList.add('added-ship');
+					});
+				};
+			};
+		gameboardArray.forEach((cell) => {
+			cell.classList.remove('test');
+		});
+	};
 
 	const onMouseOverHandler = (e) => {
-		let direction = ships[placedShips].direction;
-		let start = parseInt(e.target.id);
-		let end = start + ships[placedShips].length - 1;
+		const direction = ships[placedShips].direction;
+		const start = parseInt(e.target.id);
+		const end = start + ships[placedShips].length - 1;
 		const gameboardArray = Array.from(document.querySelectorAll(".cell"));
 		if (ships[placedShips].direction === 'horizontal') {
 			const newShip = [];
@@ -91,8 +114,8 @@ const GameboardSetup = () => {
 				};
 				newShip.forEach((cell) => {
 					gameboardArray[cell].classList.add('test');
-				})
-			}
+				});
+			};
 		} else {
 			const newShip = [];
 			if (playerGameboard.checkValidCoordinates(direction, start, end)) {
@@ -101,15 +124,15 @@ const GameboardSetup = () => {
 				};
 				newShip.forEach((cell) => {
 					gameboardArray[cell].classList.add('test');
-				})
-			}
-		}
-	}
+				});
+			};
+		};
+	};
 
 	const onMouseOutHandler = (e) => {
-		let direction = ships[placedShips].direction;
-		let start = parseInt(e.target.id);
-		let end = start + ships[placedShips].length - 1;
+		const direction = ships[placedShips].direction;
+		const start = parseInt(e.target.id);
+		const end = start + ships[placedShips].length - 1;
 		const gameboardArray = Array.from(document.querySelectorAll(".cell"));
 		if (ships[placedShips].direction === 'horizontal') {
 			const newShip = [];
@@ -119,8 +142,8 @@ const GameboardSetup = () => {
 				};
 				newShip.forEach((cell) => {
 					gameboardArray[cell].classList.remove('test');
-				})
-			}
+				});
+			};
 		} else {
 			const newShip = [];
 			if (playerGameboard.checkValidCoordinates(direction, start, end)) {
@@ -129,10 +152,10 @@ const GameboardSetup = () => {
 				};
 				newShip.forEach((cell) => {
 					gameboardArray[cell].classList.remove('test');
-				})
-			}
-		}
-	}
+				});
+			};
+		};
+	};
 
 	useEffect(() => {
 		setUpPlayerGrid();
@@ -140,9 +163,17 @@ const GameboardSetup = () => {
 	}, []);
 
 	useEffect(() => {
-		console.log(placedShips)
-		console.log(playerGameboard);
-	}, [placedShips])
+		if (placedShips >= 5){
+			props.handleNextStepChange();
+			props.setPlayerSetupGameboard(playerGameboard);
+		}
+
+		// Generate computer ships into a gameboard (same as with the player)
+		// Add all 5 player ships once completed then trigger next step by incrementing handleNextStepChange
+		// Pass player's gameboard up to App so it can be passed into Game
+		// Create the gameboards so the game is ready to play
+
+	}, [placedShips]);
 
     return (
         <div className="setup-container">
@@ -150,9 +181,9 @@ const GameboardSetup = () => {
                 <p className="setup-information__p">Add your ships!</p>
                 <button className="setup-information__btn" onClick={() => console.log(placedShips)}>Rotate</button>
             </div>
-            <div className="setup-grid">
-				<Table grid={humanSetupGrid} />
-            </div>
+			<div className="setup-grid">
+				<Table grid={createUiGrid()} />
+			</div>
         </div>
     );
 }
