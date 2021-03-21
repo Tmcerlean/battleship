@@ -40,9 +40,9 @@ const GameboardSetup = (props) => {
 			length: 2,
 			direction: 'horizontal'
 		}]);
-		
+
 	const [placedShips, setPlacedShips] = useState(0);
-   
+ 
 	const createUiGrid = () => {
 		const cells = [];
 		for (let i = 0; i < 100; i++) {
@@ -62,7 +62,56 @@ const GameboardSetup = (props) => {
 		  );
 		});
 		return result;
-	  };
+	};
+
+	const generateAiGrid = () => {
+		let aiPlacedShips = 0;
+		let currentShipLength = null;
+		let currentShipDirection = null;
+
+		const generateShipDirection = () => {
+			let randomNumber = Math.floor(Math.random() * 2);
+			if (randomNumber === 0) {
+				return 'horizontal'
+			}
+			return 'vertical'
+		}
+
+		while (aiPlacedShips <= 4) {
+			let unavailableCells = [];
+			currentShipDirection = generateShipDirection();
+
+			if (aiPlacedShips === 0) {
+				currentShipLength = 5;
+			} else {
+				currentShipLength = ships[aiPlacedShips].length;
+				for (let i = 0; i < aiGameboard.shipYard.length; i++) {
+					aiGameboard.shipYard[i].position.forEach((val) => {
+						unavailableCells.push(val);
+					})
+				};
+			};
+
+			const generateRandom = (min, max) => {
+				const num = Math.floor(Math.random() * (max - min + 1)) + min;
+				return (unavailableCells.includes(num)) ? generateRandom(min, max) : num;
+			}
+			
+			let currentShipStartCell = generateRandom(0, 99);
+			let currentShipEndCell = null;
+			
+			if (currentShipDirection === 'horizontal') {
+				currentShipEndCell = currentShipStartCell + currentShipLength - 1;
+			} else {
+				currentShipEndCell = currentShipStartCell + ((currentShipLength - 1) * 10);
+			};
+	
+			if ((aiGameboard.checkValidCoordinates(currentShipDirection, currentShipStartCell, currentShipEndCell)) && (!aiGameboard.checkIfShipPresent(currentShipDirection, currentShipStartCell, currentShipEndCell))) {
+				aiGameboard.placeShip(aiPlacedShips, currentShipDirection, currentShipStartCell, currentShipEndCell);
+				aiPlacedShips++;
+			};
+		};
+	};
 
 	const setUpPlayerGrid = () => {
 		createUiGrid();
@@ -159,27 +208,21 @@ const GameboardSetup = (props) => {
 
 	useEffect(() => {
 		setUpPlayerGrid();
-		// setUpComputerGrid();
+		generateAiGrid();
 	}, []);
 
 	useEffect(() => {
 		if (placedShips >= 5){
 			props.handleNextStepChange();
 			props.setPlayerSetupGameboard(playerGameboard);
+			props.setAiSetupGameboard(aiGameboard);
 		}
-
-		// Generate computer ships into a gameboard (same as with the player)
-		// Add all 5 player ships once completed then trigger next step by incrementing handleNextStepChange
-		// Pass player's gameboard up to App so it can be passed into Game
-		// Create the gameboards so the game is ready to play
-
 	}, [placedShips]);
 
     return (
         <div className="setup-container">
             <div className="setup-information">
                 <p className="setup-information__p">Add your ships!</p>
-                <button className="setup-information__btn" onClick={() => console.log(placedShips)}>Rotate</button>
             </div>
 			<div className="setup-grid">
 				<Table grid={createUiGrid()} />

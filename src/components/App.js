@@ -10,6 +10,7 @@ const App = () => {
     const [name, setName] = useState('');
     const [phase, setPhase] = useState(0);
     const [playerSetupGameboard, setPlayerSetupGameboard] = useState({});
+    const [aiSetupGameboard, setAiSetupGameboard] = useState({});
 
     useEffect(() => {
         console.log(playerSetupGameboard)
@@ -32,6 +33,7 @@ const App = () => {
             return (
                 <GameboardSetup 
                     setPlayerSetupGameboard={setPlayerSetupGameboard}
+                    setAiSetupGameboard={setAiSetupGameboard}
                     handleNextStepChange={handleNextStepChange}
                 />
             );
@@ -39,6 +41,7 @@ const App = () => {
             return (
                 <Game 
                     playerSetupGameboard={playerSetupGameboard}
+                    aiSetupGameboard={aiSetupGameboard}
                 />
             );
         } else {

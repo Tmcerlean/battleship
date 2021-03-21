@@ -1,23 +1,16 @@
-import gameboardFactory from './gameboardFactory';
-
 // --------------------------------------------------
 // Desc: Contains the factory function for player
 // --------------------------------------------------
 
-const playerFactory = (name) => {
+const playerFactory = () => {
 
-    const playerBoard = gameboardFactory();
-
-    const attack = (cell, player) => {
-        player.playerBoard.receiveAttack(cell);
+    const attack = (gameboard, cell) => {
+        gameboard.receiveAttack(cell);
     };
 
     return {
-        name,
-        playerBoard,
         attack
     }
-
 };
 
 export default playerFactory;

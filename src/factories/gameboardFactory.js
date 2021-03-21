@@ -87,23 +87,25 @@ const gameboardFactory = () => {
     };
 
     const receiveAttack = (cell) => {
-
         cell = parseInt(cell, 10);
+        let trackHit = false;
 
         shipYard.forEach((ship) => {
             const shipPosition = ship.position;
             const shipHits = ship.hits;
-
             if (shipPosition.includes(cell)) {
                 if (shipHits.includes(cell)) {
                     return 'Cannot Hit Same Coordinate';
                 } else {
+                    console.log(ship)
                     ship.hit(cell);
+                    trackHit = true;
                 };
-            } else {
-                missedShots.push(cell);
             };
         });
+        if (trackHit === false) {
+            missedShots.push(cell);
+        };
     };
 
     const checkIfAllShipsSunk = () => {
