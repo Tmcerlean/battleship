@@ -41,6 +41,10 @@
     background-color: red;
 }
 
+.player-cell.miss {
+    background-color: grey;
+}
+
 .ai-cell:hover {
     background-color: green;
     cursor: crosshair;
