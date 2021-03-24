@@ -15,7 +15,7 @@ const Footer = () => {
             <a href="https://www.linkedin.com/in/thomas-mcerlean-6186b3b5/">Created by Tom McErlean</a>
             </div>
             <div className="footer__right-box">
-            <a href="#">See the code</a>
+            <a href="https://github.com/Tmcerlean/battleship">See the code</a>
             </div>
         </footer>
     );

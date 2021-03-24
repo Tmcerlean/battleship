@@ -146,7 +146,7 @@ const GameboardSetup = (props) => {
 				};
 			};
 		gameboardArray.forEach((cell) => {
-			cell.classList.remove('test');
+			cell.classList.remove('new-ship');
 		});
 	};
 
@@ -162,7 +162,7 @@ const GameboardSetup = (props) => {
 					newShip.push(i);
 				};
 				newShip.forEach((cell) => {
-					gameboardArray[cell].classList.add('test');
+					gameboardArray[cell].classList.add('new-ship');
 				});
 			};
 		} else {
@@ -172,7 +172,7 @@ const GameboardSetup = (props) => {
 					newShip.push(i);  
 				};
 				newShip.forEach((cell) => {
-					gameboardArray[cell].classList.add('test');
+					gameboardArray[cell].classList.add('new-ship');
 				});
 			};
 		};
@@ -190,7 +190,7 @@ const GameboardSetup = (props) => {
 					newShip.push(i);
 				};
 				newShip.forEach((cell) => {
-					gameboardArray[cell].classList.remove('test');
+					gameboardArray[cell].classList.remove('new-ship');
 				});
 			};
 		} else {
@@ -200,7 +200,7 @@ const GameboardSetup = (props) => {
 					newShip.push(i);  
 				};
 				newShip.forEach((cell) => {
-					gameboardArray[cell].classList.remove('test');
+					gameboardArray[cell].classList.remove('new-ship');
 				});
 			};
 		};
@@ -222,7 +222,7 @@ const GameboardSetup = (props) => {
     return (
         <div className="setup-container">
             <div className="setup-information">
-                <p className="setup-information__p">Add your ships!</p>
+                <p className="setup-information__p">Add your ships{props.name === '' ? '!' : `, ${props.name}!`}</p>
             </div>
 			<div className="setup-grid">
 				<Table grid={createUiGrid()} />

@@ -11,6 +11,11 @@
     text-indent: 20px;
     font-size: 20px;
     outline: none;
+    color: #034078;
+}
+
+.intro-container__input::placeholder {
+    color: #034078;
 }
 
 .intro-container__button {
@@ -19,4 +24,11 @@
     margin-top: 30px;
     width: 100px;
     height: 30px;
+    color: #034078;
+}
+
+.intro-container__button:hover {
+    background-color: lightgray;
+    outline: none;
+    border: none;
 }

@@ -12,7 +12,6 @@ const App = () => {
     const [phase, setPhase] = useState(0);
     const [playerSetupGameboard, setPlayerSetupGameboard] = useState({});
     const [aiSetupGameboard, setAiSetupGameboard] = useState({});
-    const [winner, setWinner] = useState(null);
 
     const setPlayerName = (name) => {
         setName(name);
@@ -33,6 +32,7 @@ const App = () => {
                     setPlayerSetupGameboard={setPlayerSetupGameboard}
                     setAiSetupGameboard={setAiSetupGameboard}
                     handleNextStepChange={handleNextStepChange}
+                    name={name}
                 />
             );
         } else if (phase === 2) {
@@ -41,13 +41,6 @@ const App = () => {
                     playerSetupGameboard={playerSetupGameboard}
                     aiSetupGameboard={aiSetupGameboard}
                     handleNextStepChange={handleNextStepChange}
-                    setWinner={setWinner}
-                />
-            );
-        } else if (phase === 3) {
-            return (
-                <Results 
-                    winner={winner}
                 />
             );
         } else {

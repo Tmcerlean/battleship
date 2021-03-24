@@ -8,10 +8,11 @@
 
 html {
     /* This defines what 1 rem is */
+    font-family: 'Roboto', sans-serif;
     font-size: 62.5%;
 }
 
 body {
     box-sizing: border-box;
-    background-color: rgb(46, 46, 46);
+    background-color: #0a1128;
 }
